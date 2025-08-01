@@ -1,167 +1,133 @@
 local GroupId = 34767504
-local player = game.Players.LocalPlayer
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+-- GUI oluşturma
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Parent = player:WaitForChild("PlayerGui")
+
+local Frame = Instance.new("Frame")
+Frame.Size = UDim2.new(0, 350, 0, 150)
+Frame.Position = UDim2.new(0.5, -175, 0.5, -75)
+Frame.BackgroundColor3 = Color3.new(0, 0, 0)
+Frame.Parent = ScreenGui
+
+local TitleLabel = Instance.new("TextLabel")
+TitleLabel.Size = UDim2.new(1, -20, 0, 50)
+TitleLabel.Position = UDim2.new(0, 10, 0, 10)
+TitleLabel.BackgroundTransparency = 1
+TitleLabel.TextColor3 = Color3.new(1, 1, 1)
+TitleLabel.Text = "JOIN THE CG DEISG GROUP (by BACONX31X)"
+TitleLabel.TextScaled = true
+TitleLabel.Parent = Frame
+
+local JoinButton = Instance.new("TextButton")
+JoinButton.Size = UDim2.new(0, 150, 0, 50)
+JoinButton.Position = UDim2.new(0.5, -75, 0, 70)
+JoinButton.BackgroundColor3 = Color3.new(0, 0.6, 0)
+JoinButton.TextColor3 = Color3.new(1, 1, 1)
+JoinButton.Text = "I Joined the Group ✅"
+JoinButton.Parent = Frame
+
+local WarningLabel = Instance.new("TextLabel")
+WarningLabel.Size = UDim2.new(1, -20, 0, 30)
+WarningLabel.Position = UDim2.new(0, 10, 1, -35)
+WarningLabel.BackgroundTransparency = 1
+WarningLabel.TextColor3 = Color3.new(1, 0, 0)
+WarningLabel.Text = ""
+WarningLabel.TextScaled = true
+WarningLabel.Parent = Frame
+
+-- Script GUI (Örnek: teleport GUI) - Başlangıçta gizli
+local ScriptGui = Instance.new("ScreenGui")
+ScriptGui.Parent = player:WaitForChild("PlayerGui")
+ScriptGui.Enabled = false
+
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 400, 0, 250)
+MainFrame.Position = UDim2.new(0.5, -200, 0.5, -125)
+MainFrame.BackgroundColor3 = Color3.new(0, 0, 0)
+MainFrame.Parent = ScriptGui
+
+local InfoLabel = Instance.new("TextLabel")
+InfoLabel.Size = UDim2.new(1, -20, 0, 40)
+InfoLabel.Position = UDim2.new(0, 10, 0, 10)
+InfoLabel.BackgroundTransparency = 1
+InfoLabel.TextColor3 = Color3.new(1, 1, 1)
+InfoLabel.Text = "Teleport / Bring"
+InfoLabel.TextScaled = true
+InfoLabel.Parent = MainFrame
+
+local NameInput = Instance.new("TextBox")
+NameInput.Size = UDim2.new(0, 250, 0, 40)
+NameInput.Position = UDim2.new(0, 10, 0, 60)
+NameInput.PlaceholderText = "Enter player name"
+NameInput.TextColor3 = Color3.new(1, 1, 1)
+NameInput.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1)
+NameInput.Parent = MainFrame
+
+local TeleportButton = Instance.new("TextButton")
+TeleportButton.Size = UDim2.new(0, 120, 0, 40)
+TeleportButton.Position = UDim2.new(0, 10, 0, 110)
+TeleportButton.BackgroundColor3 = Color3.new(0, 0.5, 1)
+TeleportButton.TextColor3 = Color3.new(1, 1, 1)
+TeleportButton.Text = "Teleport"
+TeleportButton.Parent = MainFrame
+
+local BringButton = Instance.new("TextButton")
+BringButton.Size = UDim2.new(0, 120, 0, 40)
+BringButton.Position = UDim2.new(0, 140, 0, 110)
+BringButton.BackgroundColor3 = Color3.new(0, 0.7, 0.2)
+BringButton.TextColor3 = Color3.new(1, 1, 1)
+BringButton.Text = "Bring"
+BringButton.Parent = MainFrame
+
+-- GUI açıp kapatma için "-" tuşu (Minus)
 local UserInputService = game:GetService("UserInputService")
-
--- Grup kontrol ve açılış GUI'si
-local groupGui = Instance.new("ScreenGui")
-groupGui.Name = "GroupJoinGui"
-groupGui.Parent = player:WaitForChild("PlayerGui")
-
-local bg = Instance.new("Frame")
-bg.Size = UDim2.new(1, 0, 1, 0)
-bg.BackgroundColor3 = Color3.new(0, 0, 0)
-bg.BackgroundTransparency = 0.5
-bg.Parent = groupGui
-
-local infoLabel = Instance.new("TextLabel")
-infoLabel.Size = UDim2.new(0.7, 0, 0.1, 0)
-infoLabel.Position = UDim2.new(0.15, 0, 0.3, 0)
-infoLabel.BackgroundTransparency = 1
-infoLabel.TextColor3 = Color3.new(1, 1, 1)
-infoLabel.TextScaled = true
-infoLabel.Font = Enum.Font.SourceSansBold
-infoLabel.Text = "JOIN THE CG DEISG GROUP (by BACONX31X)"
-infoLabel.Parent = bg
-
-local joinBtn = Instance.new("TextButton")
-joinBtn.Size = UDim2.new(0.4, 0, 0.1, 0)
-joinBtn.Position = UDim2.new(0.3, 0, 0.45, 0)
-joinBtn.BackgroundColor3 = Color3.new(0, 0.7, 0)
-joinBtn.TextColor3 = Color3.new(1, 1, 1)
-joinBtn.Font = Enum.Font.SourceSansBold
-joinBtn.TextScaled = true
-joinBtn.Text = "I Joined the Group ✅"
-joinBtn.Parent = bg
-
-local warningLabel = Instance.new("TextLabel")
-warningLabel.Size = UDim2.new(0.7, 0, 0.07, 0)
-warningLabel.Position = UDim2.new(0.15, 0, 0.58, 0)
-warningLabel.BackgroundTransparency = 1
-warningLabel.TextColor3 = Color3.new(1, 0, 0)
-warningLabel.TextScaled = true
-warningLabel.Font = Enum.Font.SourceSansBold
-warningLabel.Text = ""
-warningLabel.Parent = bg
-
--- Ana teleport GUI (başlangıçta gizli)
-local mainGui = Instance.new("ScreenGui")
-mainGui.Name = "MainTeleportGui"
-mainGui.Parent = player.PlayerGui
-mainGui.Enabled = false
-
-local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 300, 0, 150)
-mainFrame.Position = UDim2.new(0.5, -150, 0.5, -75)
-mainFrame.BackgroundColor3 = Color3.new(0, 0, 0)
-mainFrame.BackgroundTransparency = 0.5
-mainFrame.Parent = mainGui
-
-local nameBox = Instance.new("TextBox")
-nameBox.Size = UDim2.new(0.8, 0, 0.25, 0)
-nameBox.Position = UDim2.new(0.1, 0, 0.1, 0)
-nameBox.PlaceholderText = "Enter player name"
-nameBox.TextColor3 = Color3.new(1, 1, 1)
-nameBox.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1)
-nameBox.ClearTextOnFocus = false
-nameBox.Text = ""
-nameBox.Parent = mainFrame
-
-local teleportBtn = Instance.new("TextButton")
-teleportBtn.Size = UDim2.new(0.35, 0, 0.25, 0)
-teleportBtn.Position = UDim2.new(0.1, 0, 0.5, 0)
-teleportBtn.BackgroundColor3 = Color3.new(0, 0.5, 1)
-teleportBtn.TextColor3 = Color3.new(1, 1, 1)
-teleportBtn.Text = "Teleport"
-teleportBtn.Font = Enum.Font.SourceSansBold
-teleportBtn.TextScaled = true
-teleportBtn.Parent = mainFrame
-
-local bringBtn = Instance.new("TextButton")
-bringBtn.Size = UDim2.new(0.35, 0, 0.25, 0)
-bringBtn.Position = UDim2.new(0.55, 0, 0.5, 0)
-bringBtn.BackgroundColor3 = Color3.new(0, 0.7, 0)
-bringBtn.TextColor3 = Color3.new(1, 1, 1)
-bringBtn.Text = "Bring"
-bringBtn.Font = Enum.Font.SourceSansBold
-bringBtn.TextScaled = true
-bringBtn.Parent = mainFrame
-
-local guiVisible = false
-local function toggleGui()
-    guiVisible = not guiVisible
-    mainGui.Enabled = guiVisible
-end
 
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if gameProcessed then return end
     if input.KeyCode == Enum.KeyCode.Minus then
-        toggleGui()
+        ScriptGui.Enabled = not ScriptGui.Enabled
     end
 end)
 
-local function isInGroup()
-    for _, group in ipairs(player:GetGroups()) do
-        if group.Id == GroupId then
-            return true
-        end
+-- Grup kontrol ve açma fonksiyonu
+local function checkGroupAndOpen()
+    local success, isInGroup = pcall(function()
+        return player:IsInGroup(GroupId)
+    end)
+
+    if success and isInGroup then
+        ScreenGui.Enabled = false
+        ScriptGui.Enabled = true
+    else
+        WarningLabel.Text = "You have not joined the group! Failed ❌"
+        wait(5)
+        WarningLabel.Text = ""
     end
-    return false
 end
 
-joinBtn.MouseButton1Click:Connect(function()
-    if isInGroup() then
-        groupGui:Destroy()
-        mainGui.Enabled = true
-        guiVisible = true
-    else
-        warningLabel.Text = "You have not joined the group! Failed ❌"
-        spawn(function()
-            wait(5)
-            warningLabel.Text = ""
-        end)
+JoinButton.MouseButton1Click:Connect(checkGroupAndOpen)
+
+-- Teleport fonksiyonu
+TeleportButton.MouseButton1Click:Connect(function()
+    local targetName = NameInput.Text
+    if targetName == "" then return end
+
+    local targetPlayer = Players:FindFirstChild(targetName)
+    if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        player.Character.HumanoidRootPart.CFrame = targetPlayer.Character.HumanoidRootPart.CFrame
     end
 end)
 
-local function teleportToPlayer(targetPlayer)
-    if targetPlayer and targetPlayer.Character and player.Character and
-       player.Character:FindFirstChild("HumanoidRootPart") and
-       targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
-        player.Character.HumanoidRootPart.CFrame = targetPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, 5, 0)
-    end
-end
+-- Bring fonksiyonu
+BringButton.MouseButton1Click:Connect(function()
+    local targetName = NameInput.Text
+    if targetName == "" then return end
 
-local function bringPlayer(targetPlayer)
-    if targetPlayer and targetPlayer.Character and player.Character and
-       player.Character:FindFirstChild("HumanoidRootPart") and
-       targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
-        targetPlayer.Character.HumanoidRootPart.CFrame = player.Character.HumanoidRootPart.CFrame + Vector3.new(0, 5, 0)
-    end
-end
-
-teleportBtn.MouseButton1Click:Connect(function()
-    local targetName = nameBox.Text
-    local targetPlayer = game.Players:FindFirstChild(targetName)
-    if targetPlayer then
-        teleportToPlayer(targetPlayer)
-    else
-        warningLabel.Text = "Player not found! ❌"
-        spawn(function()
-            wait(3)
-            warningLabel.Text = ""
-        end)
-    end
-end)
-
-bringBtn.MouseButton1Click:Connect(function()
-    local targetName = nameBox.Text
-    local targetPlayer = game.Players:FindFirstChild(targetName)
-    if targetPlayer then
-        bringPlayer(targetPlayer)
-    else
-        warningLabel.Text = "Player not found! ❌"
-        spawn(function()
-            wait(3)
-            warningLabel.Text = ""
-        end)
+    local targetPlayer = Players:FindFirstChild(targetName)
+    if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        targetPlayer.Character.HumanoidRootPart.CFrame = player.Character.HumanoidRootPart.CFrame
     end
 end)
