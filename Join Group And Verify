@@ -1,33 +1,116 @@
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 
 local player = Players.LocalPlayer
 local groupId = 34767504
 
--- ScreenGui
+-- GUI oluştur
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "TeleportGui"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = player:WaitForChild("PlayerGui")
 
--- Ana Frame (tam ekran GUI)
+-- Ana Frame (siyah arka plan)
 local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 300, 0, 150)
-MainFrame.Position = UDim2.new(0.5, -150, 0.5, -75)
+MainFrame.Size = UDim2.new(0, 350, 0, 220)
+MainFrame.Position = UDim2.new(0.5, -175, 0.5, -110)
 MainFrame.BackgroundColor3 = Color3.new(0, 0, 0)
-MainFrame.BackgroundTransparency = 0.5
+MainFrame.BackgroundTransparency = 0.3
+MainFrame.Active = true -- Sürüklenebilir olması için gerekli
+MainFrame.Draggable = false -- Kendimiz sürüklemeyi yapacağız
 MainFrame.Parent = ScreenGui
 
--- Kapatma butonu (X)
+-- Başlık
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, 0, 0, 30)
+Title.Position = UDim2.new(0, 0, 0, 0)
+Title.BackgroundTransparency = 1
+Title.TextColor3 = Color3.new(1, 1, 1)
+Title.Font = Enum.Font.SourceSansBold
+Title.TextSize = 22
+Title.Text = "Teleport & Bring GUI"
+Title.Parent = MainFrame
+
+-- Grup bilgilendirme yazısı
+local InfoLabel = Instance.new("TextLabel")
+InfoLabel.Size = UDim2.new(1, -20, 0, 50)
+InfoLabel.Position = UDim2.new(0, 10, 0, 40)
+InfoLabel.BackgroundTransparency = 1
+InfoLabel.TextColor3 = Color3.new(1, 1, 1)
+InfoLabel.TextWrapped = true
+InfoLabel.Font = Enum.Font.SourceSans
+InfoLabel.TextSize = 18
+InfoLabel.Text = "JOIN THE CG DESIGN GROUP (by BACONX31X)"
+InfoLabel.Parent = MainFrame
+
+-- Grup onay butonu
+local JoinButton = Instance.new("TextButton")
+JoinButton.Size = UDim2.new(0, 320, 0, 40)
+JoinButton.Position = UDim2.new(0, 15, 0, 90)
+JoinButton.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
+JoinButton.TextColor3 = Color3.new(1,1,1)
+JoinButton.Font = Enum.Font.SourceSansBold
+JoinButton.TextSize = 20
+JoinButton.Text = "I Joined the Group ✅"
+JoinButton.Parent = MainFrame
+
+-- Hata mesajı
+local ErrorLabel = Instance.new("TextLabel")
+ErrorLabel.Size = UDim2.new(1, -20, 0, 30)
+ErrorLabel.Position = UDim2.new(0, 10, 0, 140)
+ErrorLabel.BackgroundTransparency = 1
+ErrorLabel.TextColor3 = Color3.new(1, 0, 0)
+ErrorLabel.Font = Enum.Font.SourceSansBold
+ErrorLabel.TextSize = 18
+ErrorLabel.Text = ""
+ErrorLabel.Parent = MainFrame
+
+-- Kullanıcı adı girişi
+local UserNameBox = Instance.new("TextBox")
+UserNameBox.Size = UDim2.new(0, 320, 0, 30)
+UserNameBox.Position = UDim2.new(0, 15, 0, 180)
+UserNameBox.PlaceholderText = "Enter Player Name"
+UserNameBox.ClearTextOnFocus = false
+UserNameBox.Text = ""
+UserNameBox.TextColor3 = Color3.new(1,1,1)
+UserNameBox.BackgroundColor3 = Color3.fromRGB(20,20,20)
+UserNameBox.Parent = MainFrame
+
+-- Teleport Butonu
+local TeleportButton = Instance.new("TextButton")
+TeleportButton.Size = UDim2.new(0, 150, 0, 30)
+TeleportButton.Position = UDim2.new(0, 15, 0, 220)
+TeleportButton.BackgroundColor3 = Color3.fromRGB(0, 0, 150)
+TeleportButton.TextColor3 = Color3.new(1,1,1)
+TeleportButton.Font = Enum.Font.SourceSansBold
+TeleportButton.TextSize = 18
+TeleportButton.Text = "Teleport"
+TeleportButton.Parent = MainFrame
+
+-- Bring Butonu
+local BringButton = Instance.new("TextButton")
+BringButton.Size = UDim2.new(0, 150, 0, 30)
+BringButton.Position = UDim2.new(0, 185, 0, 220)
+BringButton.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+BringButton.TextColor3 = Color3.new(1,1,1)
+BringButton.Font = Enum.Font.SourceSansBold
+BringButton.TextSize = 18
+BringButton.Text = "Bring"
+BringButton.Parent = MainFrame
+
+-- Kapatma (X) butonu
 local CloseButton = Instance.new("TextButton")
 CloseButton.Size = UDim2.new(0, 30, 0, 30)
 CloseButton.Position = UDim2.new(1, -35, 0, 5)
 CloseButton.Text = "X"
 CloseButton.TextColor3 = Color3.new(1, 1, 1)
-CloseButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+CloseButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+CloseButton.Font = Enum.Font.SourceSansBold
+CloseButton.TextSize = 20
 CloseButton.Parent = MainFrame
 
--- Minimize butonu (başta gizli)
+-- Minimize Butonu (başta gizli)
 local MinimizeButton = Instance.new("TextButton")
 MinimizeButton.Size = UDim2.new(0, 40, 0, 40)
 MinimizeButton.Position = UDim2.new(1, -50, 0, 10)
@@ -35,78 +118,140 @@ MinimizeButton.AnchorPoint = Vector2.new(1, 0)
 MinimizeButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
 MinimizeButton.Text = "-"
 MinimizeButton.TextColor3 = Color3.new(1, 1, 1)
+MinimizeButton.Font = Enum.Font.SourceSansBold
+MinimizeButton.TextSize = 28
 MinimizeButton.Visible = false
 MinimizeButton.Parent = ScreenGui
 
--- Grup kontrol yazısı
-local InfoLabel = Instance.new("TextLabel")
-InfoLabel.Size = UDim2.new(1, -40, 0, 40)
-InfoLabel.Position = UDim2.new(0, 10, 0, 10)
-InfoLabel.TextColor3 = Color3.new(1, 1, 1)
-InfoLabel.BackgroundTransparency = 1
-InfoLabel.Text = "JOIN THE CG DESIGN GROUP (by BACONX31X)"
-InfoLabel.Parent = MainFrame
-
--- Grup onay butonu
-local JoinButton = Instance.new("TextButton")
-JoinButton.Size = UDim2.new(0, 280, 0, 40)
-JoinButton.Position = UDim2.new(0, 10, 0, 60)
-JoinButton.Text = "I Joined the Group ✅"
-JoinButton.TextColor3 = Color3.new(1, 1, 1)
-JoinButton.BackgroundColor3 = Color3.new(0, 0.6, 0)
-JoinButton.Parent = MainFrame
-
--- Hata mesajı label
-local ErrorLabel = Instance.new("TextLabel")
-ErrorLabel.Size = UDim2.new(1, -20, 0, 30)
-ErrorLabel.Position = UDim2.new(0, 10, 1, -40)
-ErrorLabel.TextColor3 = Color3.new(1, 0, 0)
-ErrorLabel.BackgroundTransparency = 1
-ErrorLabel.Text = ""
-ErrorLabel.Parent = MainFrame
-
-local function checkGroup()
+-- Grup kontrol fonksiyonu
+local function IsInGroup()
     return player:IsInGroup(groupId)
 end
 
--- Kapatma butonu işlemi
+-- Başlangıçta sadece grup mesajı ve join butonu gözükür, ana GUI gizli
+local guiActive = false
+MainFrame.Visible = true
+UserNameBox.Visible = false
+TeleportButton.Visible = false
+BringButton.Visible = false
+CloseButton.Visible = false
+
+-- Kapatma butonu
 CloseButton.MouseButton1Click:Connect(function()
     ScreenGui.Enabled = false
 end)
 
--- Minimize butonu işlemi
+-- Minimize butonu tıklanırsa GUI açılır
 MinimizeButton.MouseButton1Click:Connect(function()
     MainFrame.Visible = true
     MinimizeButton.Visible = false
 end)
 
--- Grup kontrolü ve açma
+-- Join butonuna basılınca grup kontrolü ve GUI aktifliği
 JoinButton.MouseButton1Click:Connect(function()
-    if checkGroup() then
+    if IsInGroup() then
+        guiActive = true
         MainFrame.Visible = true
-        MinimizeButton.Visible = false
+        InfoLabel.Visible = false
+        JoinButton.Visible = false
         ErrorLabel.Text = ""
+        UserNameBox.Visible = true
+        TeleportButton.Visible = true
+        BringButton.Visible = true
+        CloseButton.Visible = true
     else
         ErrorLabel.Text = "You have not joined the group! Failed ❌"
+        task.delay(5, function()
+            if ErrorLabel then
+                ErrorLabel.Text = ""
+            end
+        end)
+    end
+end)
+
+-- "-" tuşuna basılınca minimize/restore
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    if input.KeyCode == Enum.KeyCode.Minus then
+        if guiActive then
+            if MainFrame.Visible then
+                MainFrame.Visible = false
+                MinimizeButton.Visible = true
+            else
+                MainFrame.Visible = true
+                MinimizeButton.Visible = false
+            end
+        end
+    end
+end)
+
+-- Teleport fonksiyonu
+TeleportButton.MouseButton1Click:Connect(function()
+    local targetName = UserNameBox.Text
+    if targetName == "" then return end
+    local targetPlayer = Players:FindFirstChild(targetName)
+    if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            hrp.CFrame = targetPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+        end
+    else
+        ErrorLabel.Text = "Player not found or no character! ❌"
         task.delay(5, function()
             ErrorLabel.Text = ""
         end)
     end
 end)
 
--- Başlangıçta GUI açık
-ScreenGui.Enabled = true
-
--- "-" tuşuna basınca minimize aç/kapa
-UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if gameProcessed then return end
-    if input.KeyCode == Enum.KeyCode.Minus then
-        if MainFrame.Visible then
-            MainFrame.Visible = false
-            MinimizeButton.Visible = true
-        else
-            MainFrame.Visible = true
-            MinimizeButton.Visible = false
+-- Bring fonksiyonu
+BringButton.MouseButton1Click:Connect(function()
+    local targetName = UserNameBox.Text
+    if targetName == "" then return end
+    local targetPlayer = Players:FindFirstChild(targetName)
+    if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            targetPlayer.Character.HumanoidRootPart.CFrame = hrp.CFrame + Vector3.new(0, 3, 0)
         end
+    else
+        ErrorLabel.Text = "Player not found or no character! ❌"
+        task.delay(5, function()
+            ErrorLabel.Text = ""
+        end)
+    end
+end)
+
+-- GUI sürükleme için değişkenler
+local dragging = false
+local dragInput, dragStart, startPos
+
+MainFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = MainFrame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+MainFrame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        dragInput = input
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        local delta = input.Position - dragStart
+        MainFrame.Position = UDim2.new(
+            startPos.X.Scale,
+            startPos.X.Offset + delta.X,
+            startPos.Y.Scale,
+            startPos.Y.Offset + delta.Y
+        )
     end
 end)
